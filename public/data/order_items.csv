@@ -1,0 +1,5 @@
+orderItemId,orderId,productId,quantity,unitPrice
+1,1001,101,1,4500
+2,1001,102,1,3200
+3,1002,102,1,3200
+4,1003,103,1,1500
