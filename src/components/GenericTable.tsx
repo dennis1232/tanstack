@@ -10,6 +10,7 @@ import {
   ColumnFiltersState,
   getPaginationRowModel,
 } from '@tanstack/react-table'
+import TextInput from './Input'
 
 interface GenericTableProps<T extends object> {
   data: T[]
@@ -56,24 +57,45 @@ function GenericTable<T extends object>({ data, columns }: GenericTableProps<T>)
     )
   }
 
+  const Pagination = () => (
+    <div
+      style={{
+        display: 'flex',
+        padding: '20px',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 auto',
+      }}
+    >
+      <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        ﹤
+      </button>
+      <span>
+        עמוד {table.getState().pagination.pageIndex + 1} מתוך {table.getPageCount()}
+      </span>
+      <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        ﹥
+      </button>
+    </div>
+  )
+
   return (
     <>
-      <div>
-        <input
-          type="text"
-          placeholder="שם הלקוח"
-          value={getFilterValue('customerId')}
-          onChange={(e) => onFilterChange('customerId', e.target.value)}
-        />
-      </div>
-      <div>
-        <input
-          type="text"
-          placeholder="תיאור המוצר"
-          value={getFilterValue('productLabel')}
-          onChange={(e) => onFilterChange('productLabel', e.target.value)}
-        />
-      </div>
+      <TextInput
+        type="text"
+        inputClassName="m-2"
+        placeholder="שם הלקוח"
+        value={getFilterValue('customerId')}
+        onChange={(e) => onFilterChange('customerId', e.target.value)}
+      />
+      <TextInput
+        type="text"
+        inputClassName="m-2"
+        placeholder="תיאור המוצר"
+        value={getFilterValue('productLabel')}
+        onChange={(e) => onFilterChange('productLabel', e.target.value)}
+      />
       <table
         style={{
           borderCollapse: 'collapse',
@@ -81,12 +103,12 @@ function GenericTable<T extends object>({ data, columns }: GenericTableProps<T>)
         }}
       >
         <thead>
-          {table.getHeaderGroups().map((headerGroup, index) => (
-            <tr key={`${headerGroup.id}${index}`}>
-              {headerGroup.headers.map((header, index) => (
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
                 <th
                   onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
-                  key={`${header.id}${index}`}
+                  key={header.id}
                   style={{
                     border: '1px solid black',
                     background: '#f2f2f2',
@@ -121,10 +143,10 @@ function GenericTable<T extends object>({ data, columns }: GenericTableProps<T>)
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id + 1}>
-              {row.getVisibleCells().map((cell, index) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
                 <td
-                  key={`${cell.id}${index}`}
+                  key={cell.id}
                   style={{
                     border: '1px solid black',
                     padding: '8px',
@@ -136,27 +158,8 @@ function GenericTable<T extends object>({ data, columns }: GenericTableProps<T>)
             </tr>
           ))}
         </tbody>
-        <div
-          style={{
-            display: 'flex',
-            padding: '20px',
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: '0 auto',
-          }}
-        >
-          <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-            ﹤
-          </button>
-          <span>
-            עמוד {table.getState().pagination.pageIndex + 1} מתוך {table.getPageCount()}
-          </span>
-          <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            ﹥
-          </button>
-        </div>
       </table>
+      <Pagination />
     </>
   )
 }
